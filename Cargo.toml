@@ -1,0 +1,11 @@
+[package]
+name = "onport"
+version = "0.1.0"
+edition = "2024"
+description = "A fast port inspector for developers"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+colored = "3"
+sysinfo = "0.34"
