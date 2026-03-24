@@ -4,14 +4,14 @@ pub fn inspect_all() -> Result<(), String> {
     let output = Command::new("lsof")
         .args(["-i", "-P", "-n"])
         .output()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("inspect_all: {}", e))?;
 
-    if !output.status.success() {
-        let error_msg = String::from_utf8_lossy(&output.stderr);
-        return Err(format!("inspect_all: {}", error_msg.trim()));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    if stdout.trim().is_empty() {
+        println!("no open ports found");
+    } else {
+        println!("{}", stdout);
     }
-
-    println!("{}", String::from_utf8_lossy(&output.stdout));
     Ok(())
 }
 
@@ -20,13 +20,13 @@ pub fn inspect(port: u16) -> Result<(), String> {
     let output = Command::new("lsof")
         .args(["-i", &formatted_port, "-P", "-n"])
         .output()
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| format!("inspect: {}", e))?;
 
-    if !output.status.success() {
-        let error_msg = String::from_utf8_lossy(&output.stderr);
-        return Err(format!("inspect: {}", error_msg.trim()));
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    if stdout.trim().is_empty() {
+        println!("nothing running on port {}", port);
+    } else {
+        println!("{}", stdout);
     }
-
-    println!("{}", String::from_utf8_lossy(&output.stdout));
     Ok(())
 }
