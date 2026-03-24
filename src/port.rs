@@ -7,8 +7,10 @@ struct PortInfo {
     user: String,
 }
 
-// NAME is the last column in lsof output
-const COL_NAME: usize = 8;
+const COL_COMMAND: usize = 0;
+const COL_PID: usize = 1;
+const COL_USER: usize = 2;
+const COL_NAME: usize = 8; // NAME is the last column in lsof output
 const MIN_COLUMNS: usize = COL_NAME + 1;
 
 pub fn inspect_all() -> Result<(), String> {
@@ -56,9 +58,9 @@ fn parse_lsof(output: &str) -> Vec<PortInfo> {
             let name = cols[COL_NAME];
             let port = name.rsplit(':').next()?;
             Some(PortInfo {
-                process: cols[0].to_string(),
-                pid: cols[1].to_string(),
-                user: cols[2].to_string(),
+                process: cols[COL_COMMAND].to_string(),
+                pid: cols[COL_PID].to_string(),
+                user: cols[COL_USER].to_string(),
                 port: port.to_string(),
             })
         })
