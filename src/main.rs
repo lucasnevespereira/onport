@@ -1,5 +1,7 @@
 mod cli;
+mod output;
 mod port;
+mod process;
 
 use clap::Parser;
 use cli::Args;
