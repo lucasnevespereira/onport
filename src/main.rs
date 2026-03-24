@@ -1,20 +1,16 @@
-use std::process::Command;
+mod cli;
+mod port;
+
+use clap::Parser;
+use cli::Args;
 
 fn main() {
-    let list_ports = Command::new("lsof")
-        .args(["-i", "-P", "-n"])
-        .output()
-        .expect("failed to get ports");
+    let args = Args::parse();
 
-    match list_ports.status.success() {
-        true => {
-            print!("{}", String::from_utf8_lossy(&list_ports.stdout));
-        }
-        false => {
-            eprintln!(
-                "failed to list ports: {}",
-                String::from_utf8_lossy(&list_ports.stderr)
-            )
+    match args.port {
+        Some(port) => println!("port {} asked", port),
+        None => {
+            port::list_all();
         }
     }
 }
