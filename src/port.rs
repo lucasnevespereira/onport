@@ -1,10 +1,15 @@
+use crate::output::print_table;
+use crate::process::get_process_info;
 use std::process::Command;
 
-struct PortInfo {
-    port: String,
-    pid: String,
-    process: String,
-    user: String,
+pub struct PortInfo {
+    pub port: String,
+    pub pid: String,
+    pub process: String,
+    pub user: String,
+    pub uptime: String,
+    pub cpu: String,
+    pub mem: String,
 }
 
 const COL_COMMAND: usize = 0;
@@ -20,7 +25,15 @@ pub fn inspect_all() -> Result<(), String> {
         .map_err(|e| format!("inspect_all: {}", e))?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let entries = parse_lsof(&stdout);
+    let mut entries = parse_lsof(&stdout);
+    for entry in &mut entries {
+        if let Some(info) = get_process_info(&entry.pid) {
+            entry.uptime = info.uptime;
+            entry.cpu = info.cpu;
+            entry.mem = info.mem;
+        }
+    }
+
     if entries.is_empty() {
         println!("no open ports found");
     } else {
@@ -37,7 +50,15 @@ pub fn inspect(port: u16) -> Result<(), String> {
         .map_err(|e| format!("inspect: {}", e))?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let entries = parse_lsof(&stdout);
+    let mut entries = parse_lsof(&stdout);
+    for entry in &mut entries {
+        if let Some(info) = get_process_info(&entry.pid) {
+            entry.uptime = info.uptime;
+            entry.cpu = info.cpu;
+            entry.mem = info.mem;
+        }
+    }
+
     if entries.is_empty() {
         println!("nothing running on port {}", port);
     } else {
@@ -62,14 +83,10 @@ fn parse_lsof(output: &str) -> Vec<PortInfo> {
                 pid: cols[COL_PID].to_string(),
                 user: cols[COL_USER].to_string(),
                 port: port.to_string(),
+                uptime: String::new(),
+                cpu: String::new(),
+                mem: String::new(),
             })
         })
         .collect()
-}
-
-fn print_table(entries: &[PortInfo]) {
-    println!("{:<8} {:<8} {:<12} {}", "PORT", "PID", "PROCESS", "USER");
-    for e in entries {
-        println!("{:<8} {:<8} {:<12} {}", e.port, e.pid, e.process, e.user);
-    }
 }

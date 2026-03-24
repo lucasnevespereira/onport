@@ -14,7 +14,7 @@ pub struct ProcessInfo {
 
 pub fn get_process_info(pid: &str) -> Option<ProcessInfo> {
     let output = Command::new("ps")
-        .args(["-p", pid, "-o", "etime=,pcpu,rss="])
+        .args(["-p", pid, "-o", "etime=,pcpu=,rss="])
         .output()
         .ok()?;
 
