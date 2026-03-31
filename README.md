@@ -1,8 +1,8 @@
 # onport
 
-[![CI](https://github.com/lucasnevespereira/onport/actions/workflows/ci.yml/badge.svg)](https://github.com/lucasnevespereira/onport/actions/workflows/ci.yml)
-[![Crates.io](https://img.shields.io/crates/v/onport-cli)](https://crates.io/crates/onport-cli)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/lucasnevespereira/onport/actions/workflows/ci.yml/badge.svg?style=flat-square)](https://github.com/lucasnevespereira/onport/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/onport-cli?style=flat-square)](https://crates.io/crates/onport-cli)
+[![License](https://img.shields.io/crates/l/onport-cli?style=flat-square)](LICENSE)
 
 A fast port inspector for developers. See what's running, kill what's stuck.
 
