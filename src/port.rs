@@ -67,6 +67,22 @@ pub fn inspect(port: u16) -> Result<(), String> {
     Ok(())
 }
 
+pub fn find_by_port(port: u16) -> Result<PortInfo, String> {
+    let formatted_port = format!(":{}", port);
+    let output = Command::new("lsof")
+        .args(["-i", &formatted_port, "-P", "-n"])
+        .output()
+        .map_err(|e| format!("find_by_port: {}", e))?;
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let entries = parse_lsof(&stdout);
+
+    entries
+        .into_iter()
+        .next()
+        .ok_or_else(|| format!("nothing running on port {}", port))
+}
+
 fn parse_lsof(output: &str) -> Vec<PortInfo> {
     output
         .lines()
