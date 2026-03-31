@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
+#[command(version)]
 pub struct Args {
     #[command(subcommand)]
     pub command: Option<Commands>,
@@ -10,4 +11,5 @@ pub struct Args {
 #[derive(Subcommand)]
 pub enum Commands {
     Kill { port: u16 },
+    Version,
 }

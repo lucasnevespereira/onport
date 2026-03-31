@@ -14,6 +14,10 @@ fn main() {
 
     let result = match args.command {
         Some(Commands::Kill { port }) => kill(port),
+        Some(Commands::Version) => {
+            println!("onport {}", env!("CARGO_PKG_VERSION"));
+            Ok(())
+        }
         None => match args.port {
             Some(port) => inspect(port),
             None => inspect_all(),
