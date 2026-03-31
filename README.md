@@ -5,7 +5,7 @@ A fast port inspector for developers. See what's running, kill what's stuck.
 ## Install
 
 ```bash
-cargo install onport
+cargo install onport-cli
 ```
 
 ## Usage
@@ -14,9 +14,6 @@ cargo install onport
 onport              # list all listening ports
 onport 3000         # what's on port 3000?
 onport 3000 -k      # kill the process on port 3000
-onport 3000 -ky     # kill without confirmation
-onport -w           # live watch mode
-onport -f node      # filter by process name
 ```
 
 ### Alias
