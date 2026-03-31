@@ -19,7 +19,7 @@ pub fn get_process_info(pid: &str) -> Option<ProcessInfo> {
         .ok()?;
 
     let stdout = String::from_utf8_lossy(&output.stdout);
-    let cols: Vec<&str> = stdout.trim().split_whitespace().collect();
+    let cols: Vec<&str> = stdout.split_whitespace().collect();
     if cols.len() < MIN_PS_COLUMNS {
         return None;
     }
