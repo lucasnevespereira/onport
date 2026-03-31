@@ -2,8 +2,49 @@ use crate::port::PortInfo;
 use colored::Colorize;
 
 pub fn print_table(entries: &[PortInfo]) {
+    if entries.is_empty() {
+        return;
+    }
+
+    let w_port = entries
+        .iter()
+        .map(|e| e.port.len())
+        .max()
+        .unwrap_or(0)
+        .max("PORT".len());
+    let w_pid = entries
+        .iter()
+        .map(|e| e.pid.len())
+        .max()
+        .unwrap_or(0)
+        .max("PID".len());
+    let w_proc = entries
+        .iter()
+        .map(|e| e.process.len())
+        .max()
+        .unwrap_or(0)
+        .max("PROCESS".len());
+    let w_user = entries
+        .iter()
+        .map(|e| e.user.len())
+        .max()
+        .unwrap_or(0)
+        .max("USER".len());
+    let w_up = entries
+        .iter()
+        .map(|e| e.uptime.len())
+        .max()
+        .unwrap_or(0)
+        .max("UPTIME".len());
+    let w_cpu = entries
+        .iter()
+        .map(|e| e.cpu.len())
+        .max()
+        .unwrap_or(0)
+        .max("CPU".len());
+
     println!(
-        "{:<8} {:<8} {:<12} {:<10} {:<10} {:<8} {}",
+        "{:<w_port$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {:<w_cpu$}  {}",
         "PORT".bold(),
         "PID".bold(),
         "PROCESS".bold(),
@@ -13,10 +54,10 @@ pub fn print_table(entries: &[PortInfo]) {
         "MEM".bold()
     );
     for e in entries {
-        let cpu = colorize_cpu(&e.cpu, 8);
+        let cpu = colorize_cpu(&e.cpu, w_cpu);
         let mem = colorize_mem(&e.mem);
         println!(
-            "{:<8} {:<8} {:<12} {:<10} {:<10} {:<8} {}",
+            "{:<w_port$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {}  {}",
             e.port, e.pid, e.process, e.user, e.uptime, cpu, mem
         );
     }
