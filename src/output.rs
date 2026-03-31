@@ -1,6 +1,14 @@
 use crate::port::PortInfo;
 use colored::Colorize;
 
+// CPU usage thresholds (percentage)
+const CPU_HIGH: f64 = 50.0;
+const CPU_WARN: f64 = 20.0;
+
+// Memory usage thresholds (MB)
+const MEM_HIGH: u64 = 512;
+const MEM_WARN: u64 = 256;
+
 pub fn print_table(entries: &[PortInfo]) {
     if entries.is_empty() {
         return;
@@ -66,9 +74,9 @@ pub fn print_table(entries: &[PortInfo]) {
 fn colorize_cpu(cpu: &str, width: usize) -> String {
     let padded = format!("{:<width$}", cpu);
     let val: f64 = cpu.trim_end_matches('%').parse().unwrap_or(0.0);
-    if val > 50.0 {
+    if val > CPU_HIGH {
         padded.red().to_string()
-    } else if val > 20.0 {
+    } else if val > CPU_WARN {
         padded.yellow().to_string()
     } else {
         padded.green().to_string()
@@ -77,9 +85,9 @@ fn colorize_cpu(cpu: &str, width: usize) -> String {
 
 fn colorize_mem(mem: &str) -> String {
     let val: u64 = mem.trim_end_matches("MB").parse().unwrap_or(0);
-    if val > 512 {
+    if val > MEM_HIGH {
         mem.red().to_string()
-    } else if val > 256 {
+    } else if val > MEM_WARN {
         mem.yellow().to_string()
     } else {
         mem.green().to_string()
