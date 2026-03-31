@@ -1,9 +1,16 @@
 [package]
-name = "onport"
+name = "onport-cli"
 version = "0.1.0"
 edition = "2024"
 description = "A fast port inspector for developers"
 license = "MIT"
+repository = "https://github.com/lucasnevespereira/onport"
+keywords = ["cli", "port", "inspect", "network"]
+categories = ["command-line-utilities"]
+
+[[bin]]
+name = "onport"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
