@@ -1,20 +1,19 @@
 mod cli;
+mod kill;
 mod output;
 mod port;
 mod process;
 
 use clap::Parser;
 use cli::{Args, Commands};
+use kill::kill;
 use port::{inspect, inspect_all};
 
 fn main() {
     let args = Args::parse();
 
     let result = match args.command {
-        Some(Commands::Kill { port }) => {
-            println!("kill {}", port);
-            Ok(())
-        }
+        Some(Commands::Kill { port }) => kill(port),
         None => match args.port {
             Some(port) => inspect(port),
             None => inspect_all(),
