@@ -11,5 +11,4 @@ pub struct Args {
 #[derive(Subcommand)]
 pub enum Commands {
     Kill { port: u16 },
-    Version,
 }
