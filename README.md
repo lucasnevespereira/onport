@@ -17,7 +17,7 @@ cargo install onport-cli
 ```bash
 onport              # list all listening ports
 onport 3000         # what's on port 3000?
-onport 3000 -k      # kill the process on port 3000
+onport kill 3000    # kill the process on port 3000
 ```
 
 ### Alias
@@ -32,7 +32,7 @@ Then:
 
 ```bash
 op 3000             # what's on port 3000?
-op 3000 -k          # kill it
+op kill 3000        # kill it
 ```
 
 ## Example output
