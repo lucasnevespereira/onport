@@ -13,7 +13,7 @@ fn main() {
     let args = Args::parse();
 
     let result = match args.command {
-        Some(Commands::Kill { port }) => kill(port),
+        Some(Commands::Kill { port, force }) => kill(port, force),
         None => match args.port {
             Some(port) => inspect(port),
             None => inspect_all(),

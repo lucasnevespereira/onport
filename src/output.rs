@@ -20,6 +20,12 @@ pub fn print_table(entries: &[PortInfo]) {
         .max()
         .unwrap_or(0)
         .max("PORT".len());
+    let w_address = entries
+        .iter()
+        .map(|e| e.address.len())
+        .max()
+        .unwrap_or(0)
+        .max("BIND".len());
     let w_pid = entries
         .iter()
         .map(|e| e.pid.len())
@@ -52,8 +58,9 @@ pub fn print_table(entries: &[PortInfo]) {
         .max("CPU".len());
 
     println!(
-        "{:<w_port$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {:<w_cpu$}  {}",
+        "{:<w_port$}  {:<w_address$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {:<w_cpu$}  {}",
         "PORT".bold(),
+        "BIND".bold(),
         "PID".bold(),
         "PROCESS".bold(),
         "USER".bold(),
@@ -65,14 +72,17 @@ pub fn print_table(entries: &[PortInfo]) {
         let cpu = colorize_cpu(&e.cpu, w_cpu);
         let mem = colorize_mem(&e.mem);
         println!(
-            "{:<w_port$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {}  {}",
-            e.port, e.pid, e.process, e.user, e.uptime, cpu, mem
+            "{:<w_port$}  {:<w_address$}  {:<w_pid$}  {:<w_proc$}  {:<w_user$}  {:<w_up$}  {}  {}",
+            e.port, e.address, e.pid, e.process, e.user, e.uptime, cpu, mem
         );
     }
 }
 
 fn colorize_cpu(cpu: &str, width: usize) -> String {
     let padded = format!("{:<width$}", cpu);
+    if cpu == "-" {
+        return padded;
+    }
     let val: f64 = cpu.trim_end_matches('%').parse().unwrap_or(0.0);
     if val > CPU_HIGH {
         padded.red().to_string()
@@ -84,6 +94,9 @@ fn colorize_cpu(cpu: &str, width: usize) -> String {
 }
 
 fn colorize_mem(mem: &str) -> String {
+    if mem == "-" {
+        return mem.to_string();
+    }
     let val: u64 = mem.trim_end_matches("MB").parse().unwrap_or(0);
     if val > MEM_HIGH {
         mem.red().to_string()
