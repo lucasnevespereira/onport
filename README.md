@@ -51,3 +51,7 @@ PORT  BIND       PID    PROCESS   USER   UPTIME  CPU   MEM
 ## License
 
 [MIT](LICENSE)
+
+## Releasing
+
+See [RELEASING.md](RELEASING.md) for the crates.io and GitHub release steps.
