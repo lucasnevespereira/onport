@@ -1,32 +1,39 @@
-use std::io::{self, Write};
 use std::process::Command;
+use std::thread;
+use std::time::Duration;
 
-use crate::port::find_by_port;
+use crate::port::{find_by_port, is_port_listening};
 
-pub fn kill(port: u16) -> Result<(), String> {
+pub fn kill(port: u16, force: bool) -> Result<(), String> {
     let entry = find_by_port(port)?;
+    let signal = if force { "-KILL" } else { "-TERM" };
 
-    print!(
-        "Kill {} (PID {}) on port {}? [y/N] ",
-        entry.process, entry.pid, port
-    );
-    io::stdout().flush().map_err(|e| e.to_string())?;
-
-    let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .map_err(|e| e.to_string())?;
-
-    if input.trim().to_lowercase() != "y" {
-        println!("aborted");
-        return Ok(());
+    let output = Command::new("kill")
+        .args([signal, &entry.pid])
+        .output()
+        .map_err(|e| format!("could not run kill: {e}"))?;
+    if !output.status.success() {
+        return Err(format!(
+            "could not stop {} (PID {}): {}",
+            entry.process,
+            entry.pid,
+            String::from_utf8_lossy(&output.stderr).trim()
+        ));
     }
 
-    Command::new("kill")
-        .arg(&entry.pid)
-        .output()
-        .map_err(|e| format!("kill: {}", e))?;
+    for _ in 0..20 {
+        if !is_port_listening(port)? {
+            println!("freed port {port} ({} · PID {})", entry.process, entry.pid);
+            return Ok(());
+        }
+        thread::sleep(Duration::from_millis(100));
+    }
 
-    println!("killed {} (PID {})", entry.process, entry.pid);
-    Ok(())
+    Err(format!(
+        "sent {} to {} (PID {}), but port {} is still listening",
+        if force { "SIGKILL" } else { "SIGTERM" },
+        entry.process,
+        entry.pid,
+        port
+    ))
 }
